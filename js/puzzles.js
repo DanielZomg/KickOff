@@ -2,12 +2,12 @@
 import { el, clear } from "./util.js";
 
 export const FORMAT_TITLES = {
-  vraifaux: "Vrai ou Faux",
-  motdujour: "Le Mot du jour",
-  parcours: "Le Parcours",
-  cineemoji: "Ciné-Émoji",
-  quiztennis: "Quiz Tennis",
-  quizsport: "Quiz Sport",
+  vraifaux: "Vrai ou faux",
+  motdujour: "Le mot du jour",
+  parcours: "Le parcours",
+  cineemoji: "Cinémoji",
+  quiztennis: "Quiz tennis",
+  quizsport: "Quiz sport",
   quisuisje: "Qui suis-je ?",
 };
 

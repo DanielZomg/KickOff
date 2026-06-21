@@ -107,7 +107,7 @@ function renderProgress() {
   clear(host);
   const { done, total } = dailyProgress(TODAY, FORMATS.map((f) => f.key));
   const pct = Math.round((done / total) * 100);
-  const msg = done >= total ? "Bravo, tournée terminée ! 🎉" : `Encore ${total - done} jeu${total - done > 1 ? "x" : ""} à jouer.`;
+  const msg = done >= total ? "Bravo, tournée terminée ! 🎉" : `Encore ${total - done} jeu${total - done > 1 ? "x" : ""} à faire.`;
   host.appendChild(el("div", { class: "card progress-card" }, [
     el("div", { class: "progress-row" }, [el("strong", { text: "Aujourd'hui" }), el("span", { class: "progress-count", text: `${done}/${total}` })]),
     el("div", { class: "progress-bar" }, [el("div", { class: "progress-fill", style: `width:${pct}%` })]),
@@ -117,7 +117,7 @@ function renderProgress() {
 
 function setBadge(badge, saved) {
   badge.className = "daily-badge";
-  if (!saved) { badge.classList.add("todo"); badge.textContent = "À jouer"; }
+  if (!saved) { badge.classList.add("todo"); badge.textContent = "Dispo"; }
   else if (saved.status === "solved") { badge.classList.add("win"); badge.textContent = "Réussi ✓"; }
   else { badge.classList.add("lose"); badge.textContent = "Raté"; }
 }
