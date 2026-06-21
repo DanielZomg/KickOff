@@ -1,0 +1,14 @@
+[
+  { "id": "om",   "name": "Olympique de Marseille", "short": "OM",  "crest": "OM", "color": "#2faee0", "aliases": ["Marseille", "Olympique de Marseille", "Olympique Marseille"] },
+  { "id": "psg",  "name": "Paris Saint-Germain",    "short": "PSG", "crest": "PSG","color": "#0b1f44", "aliases": ["Paris Saint-Germain", "Paris SG", "Paris S", "PSG"] },
+  { "id": "ol",   "name": "Olympique Lyonnais",     "short": "OL",  "crest": "OL", "color": "#d3122a", "aliases": ["Lyon", "Olympique Lyonnais"] },
+  { "id": "asm",  "name": "AS Monaco",              "short": "ASM", "crest": "ASM","color": "#c8102e", "aliases": ["Monaco", "AS Monaco"] },
+  { "id": "losc", "name": "LOSC Lille",             "short": "LIL", "crest": "LOS","color": "#d2122e", "aliases": ["Lille", "LOSC"] },
+  { "id": "ogcn", "name": "OGC Nice",               "short": "NICE","crest": "OGC","color": "#c8102e", "aliases": ["Nice", "OGC Nice"] },
+  { "id": "rcl",  "name": "RC Lens",                "short": "RCL", "crest": "RCL","color": "#fff200", "aliases": ["Lens", "RC Lens"] },
+  { "id": "srfc", "name": "Stade Rennais",          "short": "REN", "crest": "SRF","color": "#d2122e", "aliases": ["Rennes", "Stade Rennais"] },
+  { "id": "rcsa", "name": "RC Strasbourg",          "short": "STR", "crest": "RCS","color": "#0099d8", "aliases": ["Strasbourg", "RC Strasbourg"] },
+  { "id": "sb29", "name": "Stade Brestois",         "short": "BRE", "crest": "SB","color": "#e2001a", "aliases": ["Brest", "Stade Brestois"] },
+  { "id": "fcn",  "name": "FC Nantes",              "short": "NAN", "crest": "FCN","color": "#fece00", "aliases": ["Nantes", "FC Nantes"] },
+  { "id": "tfc",  "name": "Toulouse FC",            "short": "TLS", "crest": "TFC","color": "#642178", "aliases": ["Toulouse", "Toulouse FC"] }
+]

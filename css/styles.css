@@ -1,0 +1,295 @@
+:root {
+  --green: #0b6e4f;
+  --green-dark: #075138;
+  --green-light: #128a63;
+  --grass: #1aa06d;
+  --accent: #ffb703;
+  --accent-dark: #e89c00;
+  --bg: #f4f7f5;
+  --card: #ffffff;
+  --ink: #14241d;
+  --ink-soft: #5b6b63;
+  --line: #e2e9e5;
+  --good: #2e9e5b;
+  --close: #ffb703;
+  --bad: #c0c8c3;
+  --danger: #d64545;
+  --radius: 18px;
+  --shadow: 0 6px 22px rgba(11, 110, 79, 0.10);
+  --tabbar-h: 64px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+button { font-family: inherit; cursor: pointer; }
+
+.screen { min-height: 100vh; min-height: 100dvh; }
+[hidden] { display: none !important; }
+
+/* ---------- Onboarding ---------- */
+#onboarding {
+  background: radial-gradient(120% 80% at 50% 0%, var(--green-light) 0%, var(--green) 45%, var(--green-dark) 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+.onboarding-inner {
+  padding: max(34px, env(safe-area-inset-top)) 20px 40px;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.brand { text-align: center; margin-bottom: 26px; }
+.brand-badge {
+  width: 72px; height: 72px; margin: 0 auto 12px;
+  border-radius: 22px; background: rgba(255,255,255,0.16);
+  display: grid; place-items: center; font-size: 38px;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.25);
+}
+.brand h1 { margin: 0; font-size: 30px; letter-spacing: -0.5px; }
+.tagline { margin: 6px 0 0; opacity: 0.85; font-size: 15px; }
+.pick-title { margin: 8px 0 4px; font-size: 22px; }
+.pick-sub { margin: 0 0 18px; opacity: 0.85; font-size: 14px; }
+
+.club-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.club-btn {
+  background: rgba(255,255,255,0.97);
+  border: none; border-radius: 16px;
+  padding: 16px 12px;
+  display: flex; align-items: center; gap: 12px;
+  color: var(--ink); font-size: 15px; font-weight: 600;
+  text-align: left; min-height: 64px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  transition: transform 0.08s ease;
+}
+.club-btn:active { transform: scale(0.97); }
+.club-crest {
+  width: 38px; height: 38px; border-radius: 10px; flex: 0 0 38px;
+  display: grid; place-items: center; font-size: 18px; font-weight: 800;
+  color: #fff;
+}
+
+/* ---------- App shell ---------- */
+.app-header {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--green);
+  color: #fff;
+  padding: max(14px, env(safe-area-inset-top)) 18px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.app-header-title { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; }
+.app-logo { font-size: 20px; }
+.streak-chip {
+  background: rgba(255,255,255,0.18); color: #fff; border: none;
+  border-radius: 999px; padding: 6px 12px; font-size: 14px; font-weight: 700;
+}
+
+.tab {
+  max-width: 560px; margin: 0 auto;
+  padding: 16px 16px calc(var(--tabbar-h) + var(--safe-bottom) + 20px);
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.card-eyebrow {
+  text-transform: uppercase; letter-spacing: 0.06em;
+  font-size: 11px; font-weight: 800; color: var(--green);
+  margin-bottom: 4px;
+}
+.card h2 { margin: 0 0 14px; font-size: 20px; }
+
+.rhythm-text { margin: 0; color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
+
+.mondial-banner {
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(100deg, var(--accent) 0%, var(--accent-dark) 100%);
+  color: #3a2a00; border-radius: var(--radius);
+  padding: 14px 16px; margin-bottom: 16px;
+  box-shadow: 0 6px 18px rgba(232,156,0,0.30);
+}
+.mondial-star { font-size: 24px; }
+.mondial-banner strong { display: block; font-size: 16px; }
+.mondial-banner small { opacity: 0.8; }
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+  background: var(--green); color: #fff; border: none;
+  border-radius: 14px; padding: 15px 18px; font-size: 16px; font-weight: 700;
+  width: 100%; transition: transform 0.08s ease, background 0.15s ease;
+}
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:disabled { background: var(--bad); }
+.btn-ghost {
+  background: var(--bg); color: var(--ink); border: 1.5px solid var(--line);
+  border-radius: 14px; padding: 13px 16px; font-size: 15px; font-weight: 600; width: 100%;
+}
+
+/* ---------- Vrai ou Faux ---------- */
+.vf-statement { font-size: 19px; line-height: 1.4; margin: 0 0 20px; }
+.vf-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.vf-btn {
+  border: none; border-radius: 14px; padding: 18px; font-size: 17px; font-weight: 800;
+  color: #fff; transition: transform 0.08s ease, opacity 0.15s ease;
+}
+.vf-btn.vrai { background: var(--good); }
+.vf-btn.faux { background: var(--danger); }
+.vf-btn:active { transform: scale(0.97); }
+.vf-explain {
+  margin-top: 18px; padding: 14px; border-radius: 12px;
+  background: var(--bg); font-size: 14px; line-height: 1.45; color: var(--ink-soft);
+}
+.vf-verdict { font-weight: 800; margin-bottom: 6px; }
+.vf-verdict.win { color: var(--good); }
+.vf-verdict.lose { color: var(--danger); }
+
+/* ---------- Le Parcours ---------- */
+.parcours-path { display: flex; flex-direction: column; gap: 8px; margin: 0 0 18px; }
+.parcours-step {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg); border-radius: 12px; padding: 10px 12px; font-weight: 600;
+}
+.parcours-yrs { color: var(--ink-soft); font-size: 13px; font-weight: 600; min-width: 70px; }
+.parcours-options { display: grid; gap: 10px; }
+.opt-btn {
+  border: 1.5px solid var(--line); background: var(--card); color: var(--ink);
+  border-radius: 14px; padding: 15px; font-size: 16px; font-weight: 600; text-align: left;
+  transition: transform 0.08s ease;
+}
+.opt-btn:active { transform: scale(0.98); }
+.opt-btn.correct { background: var(--good); color: #fff; border-color: var(--good); }
+.opt-btn.wrong { background: var(--danger); color: #fff; border-color: var(--danger); }
+.opt-btn:disabled { opacity: 0.55; }
+
+/* ---------- Le Mot du jour (Wordle) ---------- */
+.wordle-grid { display: grid; gap: 6px; justify-content: center; margin: 0 auto 16px; }
+.wordle-row { display: grid; gap: 6px; }
+.wordle-cell {
+  width: 46px; height: 46px; border: 2px solid var(--line); border-radius: 8px;
+  display: grid; place-items: center; font-size: 22px; font-weight: 800; text-transform: uppercase;
+  background: #fff; color: var(--ink); transition: transform 0.12s ease;
+}
+.wordle-cell.filled { border-color: var(--ink-soft); }
+.wordle-cell.good { background: var(--good); color: #fff; border-color: var(--good); }
+.wordle-cell.close { background: var(--close); color: #3a2a00; border-color: var(--close); }
+.wordle-cell.bad { background: var(--bad); color: #fff; border-color: var(--bad); }
+.wordle-keyboard { display: flex; flex-direction: column; gap: 6px; }
+.wordle-krow { display: flex; gap: 5px; justify-content: center; }
+.key {
+  flex: 1; min-width: 0; max-width: 40px; height: 50px; border: none; border-radius: 8px;
+  background: #d7e0db; color: var(--ink); font-weight: 700; font-size: 15px;
+}
+.key.wide { max-width: 64px; flex: 1.5; font-size: 13px; }
+.key.good { background: var(--good); color: #fff; }
+.key.close { background: var(--close); color: #3a2a00; }
+.key.bad { background: var(--bad); color: #fff; }
+.key:active { transform: scale(0.95); }
+
+/* ---------- Result / solved states ---------- */
+.solved-banner {
+  text-align: center; padding: 8px 0 4px;
+}
+.solved-banner .big { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+.solved-banner .sub { color: var(--ink-soft); font-size: 14px; }
+.points-pill {
+  display: inline-block; background: var(--green); color: #fff;
+  border-radius: 999px; padding: 4px 12px; font-weight: 800; font-size: 14px; margin-top: 8px;
+}
+
+/* ---------- Predictions ---------- */
+.match-card {
+  background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 16px; margin-bottom: 14px;
+}
+.match-comp { font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--green); margin-bottom: 4px; }
+.match-comp.wc { color: var(--accent-dark); }
+.match-date { font-size: 13px; color: var(--ink-soft); margin-bottom: 12px; }
+.match-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.match-team { flex: 1; display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; }
+.match-team.away { justify-content: flex-end; text-align: right; }
+.mini-crest { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; color: #fff; font-size: 11px; font-weight: 800; flex: 0 0 26px; }
+.score-input { display: flex; align-items: center; gap: 6px; }
+.stepper { display: flex; flex-direction: column; align-items: center; }
+.stepper-val { font-size: 26px; font-weight: 800; min-width: 30px; text-align: center; }
+.stepper-btns { display: flex; gap: 4px; margin-top: 2px; }
+.stepper-btn {
+  width: 30px; height: 30px; border-radius: 8px; border: none;
+  background: var(--bg); font-size: 18px; font-weight: 800; color: var(--green);
+}
+.score-sep { font-size: 22px; font-weight: 800; color: var(--ink-soft); }
+.match-actions { margin-top: 14px; }
+.match-locked, .match-result {
+  margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: var(--bg);
+  font-size: 14px; color: var(--ink-soft); text-align: center;
+}
+.match-result .final { font-weight: 800; color: var(--ink); font-size: 16px; }
+.result-points { font-weight: 800; }
+.result-points.p3 { color: var(--good); }
+.result-points.p2 { color: var(--green); }
+.result-points.p1 { color: var(--accent-dark); }
+.result-points.p0 { color: var(--danger); }
+
+.empty-state { text-align: center; color: var(--ink-soft); padding: 40px 20px; }
+.empty-state .em { font-size: 40px; display: block; margin-bottom: 10px; }
+.section-label { font-size: 13px; font-weight: 800; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; margin: 4px 4px 10px; }
+
+/* ---------- Stats ---------- */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.stat-box { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; text-align: center; }
+.stat-num { font-size: 30px; font-weight: 800; color: var(--green); }
+.stat-cap { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+.share-btn { margin-top: 4px; }
+
+/* ---------- Tab bar ---------- */
+.tabbar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+  height: calc(var(--tabbar-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: #fff; border-top: 1px solid var(--line);
+  display: flex;
+  max-width: 560px; margin: 0 auto;
+}
+.tabbtn {
+  flex: 1; background: none; border: none; color: var(--ink-soft);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  font-size: 11px; font-weight: 700;
+}
+.tabbtn .tabicon { font-size: 20px; filter: grayscale(0.4); opacity: 0.6; }
+.tabbtn.is-active { color: var(--green); }
+.tabbtn.is-active .tabicon { filter: none; opacity: 1; }
+
+/* ---------- Install prompt ---------- */
+.install-prompt {
+  position: fixed; left: 12px; right: 12px; bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 12px);
+  z-index: 30; max-width: 536px; margin: 0 auto;
+  background: var(--ink); color: #fff; border-radius: 16px; padding: 16px 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.30);
+}
+.install-prompt p { margin: 0 0 6px; font-size: 14px; line-height: 1.4; }
+.install-close { position: absolute; top: 8px; right: 10px; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 22px; line-height: 1; }
+.install-steps { font-size: 13px; color: rgba(255,255,255,0.8); line-height: 1.5; }
+.install-steps b { color: #fff; }
+
+@media (min-width: 480px) {
+  .wordle-cell { width: 52px; height: 52px; }
+}
