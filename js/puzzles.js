@@ -5,6 +5,10 @@ export const FORMAT_TITLES = {
   vraifaux: "Vrai ou Faux",
   motdujour: "Le Mot du jour",
   parcours: "Le Parcours",
+  cineemoji: "Ciné-Émoji",
+  quiztennis: "Quiz Tennis",
+  quizsport: "Quiz Sport",
+  quisuisje: "Qui suis-je ?",
 };
 
 // ctx = { key, format, item, saved, onComplete(record, solved) }
@@ -17,6 +21,63 @@ export function renderPuzzle(host, ctx) {
   if (ctx.format === "vraifaux") renderVraiFaux(host, ctx);
   else if (ctx.format === "parcours") renderParcours(host, ctx);
   else if (ctx.format === "motdujour") renderWordle(host, ctx);
+  else if (ctx.format === "cineemoji") renderCineEmoji(host, ctx);
+  else if (ctx.format === "quiztennis" || ctx.format === "quizsport") renderQuiz(host, ctx);
+  else if (ctx.format === "quisuisje") renderQuiSuisJe(host, ctx);
+}
+
+// Bloc de réponses à choix multiple, partagé par plusieurs jeux.
+function makeChoices(host, options, answer, saved, onComplete) {
+  const buttons = [];
+  const finish = (idx) => {
+    const correct = options[idx] === answer;
+    buttons.forEach((b, i) => {
+      b.disabled = true;
+      if (options[i] === answer) b.classList.add("correct");
+      else if (i === idx) b.classList.add("wrong");
+    });
+    if (!saved) onComplete({ status: correct ? "solved" : "failed", chosenIndex: idx }, correct);
+  };
+  host.appendChild(el("div", { class: "parcours-options" }, options.map((name, i) => {
+    const b = el("button", { class: "opt-btn", onClick: () => finish(i) }, [name]);
+    buttons.push(b);
+    return b;
+  })));
+  if (saved) finish(saved.chosenIndex);
+}
+
+/* ---------------- Ciné-Émoji ---------------- */
+function renderCineEmoji(host, ctx) {
+  host.appendChild(el("div", { class: "card-eyebrow", text: "Quel film ou quelle série ?" }));
+  host.appendChild(el("div", { class: "emoji-prompt", text: ctx.item.emojis }));
+  makeChoices(host, ctx.item.options, ctx.item.answer, ctx.saved, ctx.onComplete);
+}
+
+/* ---------------- Quiz (tennis / sport) ---------------- */
+function renderQuiz(host, ctx) {
+  host.appendChild(el("p", { class: "quiz-question", text: ctx.item.question }));
+  makeChoices(host, ctx.item.options, ctx.item.answer, ctx.saved, ctx.onComplete);
+}
+
+/* ---------------- Qui suis-je ? ---------------- */
+function renderQuiSuisJe(host, ctx) {
+  const { item, saved } = ctx;
+  host.appendChild(el("div", { class: "card-eyebrow", text: "Devine le joueur" }));
+  const cluesBox = el("div", { class: "clues" });
+  host.appendChild(cluesBox);
+  let revealed = saved ? item.clues.length : 1;
+  const moreBtn = el("button", { class: "btn-ghost clue-btn", onClick: () => { revealed = Math.min(item.clues.length, revealed + 1); paint(); } }, ["Indice suivant"]);
+
+  function paint() {
+    clear(cluesBox);
+    item.clues.slice(0, revealed).forEach((c, i) => cluesBox.appendChild(
+      el("div", { class: "clue" }, [el("span", { class: "clue-n", text: String(i + 1) }), el("span", { text: c })])
+    ));
+    moreBtn.hidden = revealed >= item.clues.length;
+  }
+  paint();
+  host.appendChild(moreBtn);
+  makeChoices(host, item.options, item.answer, saved, ctx.onComplete);
 }
 
 function solvedBanner(text, points) {

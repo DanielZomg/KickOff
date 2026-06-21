@@ -1,14 +1,14 @@
-// Stockage local + helpers de dates et de score.
+// Stockage local + helpers de dates et de série.
 const KEY = "coupdenvoi.v1";
 
 const DEFAULT = {
   profile: null,        // { clubId, createdAt }
-  puzzles: {},          // { 'YYYY-MM-DD': { format, itemId, status, ... } }
+  days: {},             // { 'YYYY-MM-DD': { format: { itemId, status, ... } } }
   puzzleStreak: 0,
-  puzzleLastDay: null,  // dernier jour résolu (clé)
+  puzzleLastDay: null,  // dernier jour où au moins un jeu a été réussi
   puzzleSolved: 0,
   puzzlePlayed: 0,
-  predictions: {},      // { matchId: { home, away, at } }
+  predictions: {},      // réservé pour une future version (pronostics)
 };
 
 let state = load();
@@ -58,31 +58,40 @@ export function yesterdayKey(key) {
   return dayKey(d);
 }
 
-// Quel format de jeu pour ce jour (rythme hebdomadaire fixe).
-export function formatForDay(key) {
-  const dow = new Date(`${key}T00:00:00`).getDay(); // 0=dim .. 6=sam
-  const map = { 1: "motdujour", 4: "motdujour", 2: "parcours", 5: "parcours", 3: "vraifaux", 6: "vraifaux", 0: "vraifaux" };
-  return map[dow];
-}
-
+// Choix déterministe d'un item dans une banque, pour un jour donné.
 export function pickItem(bank, key) {
   if (!bank || !bank.length) return null;
   return bank[Math.abs(epochDay(key)) % bank.length];
 }
 
-// ---------- Streak du jeu du jour ----------
-export function recordPuzzleResult(key, solved) {
+// ---------- Jeux du jour ----------
+export function dayRecords(key) {
+  return state.days[key] || {};
+}
+
+// Enregistre le résultat d'un jeu (un seul par type et par jour).
+export function recordPuzzle(key, format, record, solved) {
   update((s) => {
+    const day = s.days[key] || (s.days[key] = {});
+    const hadSolveToday = Object.values(day).some((r) => r.status === "solved");
+    day[format] = record;
     s.puzzlePlayed += 1;
-    if (solved) {
-      s.puzzleSolved += 1;
+    if (solved) s.puzzleSolved += 1;
+
+    // Série « indulgente » : un jour compte dès le premier jeu réussi.
+    if (solved && !hadSolveToday) {
       if (s.puzzleLastDay === yesterdayKey(key)) s.puzzleStreak += 1;
       else if (s.puzzleLastDay !== key) s.puzzleStreak = 1;
       s.puzzleLastDay = key;
-    } else if (s.puzzleLastDay !== yesterdayKey(key) && s.puzzleLastDay !== key) {
-      s.puzzleStreak = 0;
     }
   });
+}
+
+// Progression du jour : combien de jeux joués sur le total.
+export function dailyProgress(key, formatKeys) {
+  const day = dayRecords(key);
+  const done = formatKeys.filter((f) => day[f]).length;
+  return { done, total: formatKeys.length };
 }
 
 // Une série n'est « vivante » que si elle a été alimentée aujourd'hui ou hier.
@@ -91,7 +100,7 @@ export function liveStreak(key) {
   return 0;
 }
 
-// ---------- Score des pronostics ----------
+// ---------- Score des pronostics (réservé v2) ----------
 export function scorePrediction(pred, actual) {
   if (pred.home === actual.home && pred.away === actual.away) return 3;
   const pdiff = Math.sign(pred.home - pred.away);

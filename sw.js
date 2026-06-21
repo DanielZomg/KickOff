@@ -1,5 +1,5 @@
 // Service worker : installation hors-ligne + données fraîches quand le réseau répond.
-const VERSION = "coupdenvoi-v1.1";
+const VERSION = "coupdenvoi-v1.2";
 const SHELL = [
   ".",
   "index.html",

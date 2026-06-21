@@ -1,15 +1,26 @@
 // Point d'entrée : chargement des données, onboarding, navigation, installation.
-// Version 1 — jeux du jour uniquement (les pronostics arriveront plus tard).
+// Version 1 — plusieurs jeux par jour (un par type), pas de pronostics (parqués pour la v2).
 import { el, clear, crest } from "./util.js";
 import {
-  getState, setProfile, update, dayKey, formatForDay, pickItem,
-  recordPuzzleResult, liveStreak,
+  getState, setProfile, dayKey, pickItem,
+  recordPuzzle, dayRecords, dailyProgress, liveStreak,
 } from "./state.js";
 import { FORMAT_TITLES, renderPuzzle } from "./puzzles.js";
 
 const TODAY = dayKey();
-let DATA = { clubs: [], puzzles: {} };
 
+// Les jeux proposés chaque jour, dans l'ordre d'affichage.
+const FORMATS = [
+  { key: "vraifaux", icon: "⚖️" },
+  { key: "quisuisje", icon: "🕵️" },
+  { key: "motdujour", icon: "🔤" },
+  { key: "parcours", icon: "🧭" },
+  { key: "cineemoji", icon: "🎬" },
+  { key: "quiztennis", icon: "🎾" },
+  { key: "quizsport", icon: "🏅" },
+];
+
+let DATA = { clubs: [], puzzles: {} };
 const $ = (sel) => document.querySelector(sel);
 
 async function loadJSON(path) {
@@ -68,7 +79,7 @@ function showApp() {
 
   setupTabs();
   refreshStreak();
-  renderToday();
+  renderDailyHub();
   maybeInstallPrompt();
 }
 
@@ -90,41 +101,101 @@ function setupTabs() {
   });
 }
 
-function renderToday() {
-  const format = formatForDay(TODAY);
-  const item = pickItem(DATA.puzzles[format], TODAY);
-  $("#puzzleTitle").textContent = FORMAT_TITLES[format];
-  const saved = getState().puzzles[TODAY];
-  const savedRecord = saved && saved.format === format && saved.itemId === item?.id ? saved : null;
-
-  renderPuzzle($("#puzzleHost"), {
-    key: TODAY, format, item, saved: savedRecord,
-    onComplete: (record, solved) => {
-      update((s) => { s.puzzles[TODAY] = { format, itemId: item.id, ...record }; });
-      recordPuzzleResult(TODAY, solved);
-      refreshStreak();
-    },
-  });
+/* ---------------- Hub des jeux du jour ---------------- */
+function renderProgress() {
+  const host = $("#progressHost");
+  clear(host);
+  const { done, total } = dailyProgress(TODAY, FORMATS.map((f) => f.key));
+  const pct = Math.round((done / total) * 100);
+  const msg = done >= total ? "Bravo, tournée terminée ! 🎉" : `Encore ${total - done} jeu${total - done > 1 ? "x" : ""} à jouer.`;
+  host.appendChild(el("div", { class: "card progress-card" }, [
+    el("div", { class: "progress-row" }, [el("strong", { text: "Aujourd'hui" }), el("span", { class: "progress-count", text: `${done}/${total}` })]),
+    el("div", { class: "progress-bar" }, [el("div", { class: "progress-fill", style: `width:${pct}%` })]),
+    el("div", { class: "progress-sub", text: msg }),
+  ]));
 }
 
-/* ---------------- Mes stats (jeux du jour) ---------------- */
+function setBadge(badge, saved) {
+  badge.className = "daily-badge";
+  if (!saved) { badge.classList.add("todo"); badge.textContent = "À jouer"; }
+  else if (saved.status === "solved") { badge.classList.add("win"); badge.textContent = "Réussi ✓"; }
+  else { badge.classList.add("lose"); badge.textContent = "Raté"; }
+}
+
+function renderDailyHub() {
+  renderProgress();
+  const host = $("#dailyHost");
+  clear(host);
+  for (const f of FORMATS) {
+    const item = pickItem(DATA.puzzles[f.key], TODAY);
+    const rec = dayRecords(TODAY)[f.key];
+    const saved = rec && rec.itemId === item?.id ? rec : null;
+
+    const card = el("div", { class: `daily-card${saved ? " done" : ""}` });
+    const badge = el("span", { class: "daily-badge" });
+    setBadge(badge, saved);
+    const body = el("div", { class: "daily-body", hidden: true });
+    const head = el("button", { class: "daily-head", onClick: () => toggleCard(card) }, [
+      el("span", { class: "daily-icon", text: f.icon }),
+      el("span", { class: "daily-title", text: FORMAT_TITLES[f.key] }),
+      badge,
+      el("span", { class: "chev", text: "▸" }),
+    ]);
+    card.append(head, body);
+    card._ctx = { f, item, badge, saved };
+    host.appendChild(card);
+  }
+}
+
+function toggleCard(card) {
+  const isOpen = card.classList.contains("open");
+  document.querySelectorAll(".daily-card.open").forEach((c) => {
+    c.classList.remove("open");
+    c.querySelector(".daily-body").hidden = true;
+  });
+  if (isOpen) return;
+
+  card.classList.add("open");
+  const body = card.querySelector(".daily-body");
+  body.hidden = false;
+
+  if (!card.dataset.rendered) {
+    const { f, item } = card._ctx;
+    renderPuzzle(body, {
+      key: TODAY, format: f.key, item, saved: card._ctx.saved,
+      onComplete: (record, solved) => {
+        const full = { itemId: item.id, ...record };
+        recordPuzzle(TODAY, f.key, full, solved);
+        card._ctx.saved = full;
+        card.classList.add("done");
+        setBadge(card._ctx.badge, full);
+        refreshStreak();
+        renderProgress();
+      },
+    });
+    card.dataset.rendered = "1";
+  }
+}
+
+/* ---------------- Mes stats ---------------- */
 function renderStats(host) {
   clear(host);
   const s = getState();
   const streak = liveStreak(TODAY);
   const accuracy = s.puzzlePlayed ? Math.round((s.puzzleSolved / s.puzzlePlayed) * 100) : 0;
+  const { done, total } = dailyProgress(TODAY, FORMATS.map((f) => f.key));
 
   const box = (num, cap) => el("div", { class: "stat-box" }, [
     el("div", { class: "stat-num", text: String(num) }),
     el("div", { class: "stat-cap", text: cap }),
   ]);
 
-  host.appendChild(el("div", { class: "section-label", text: "Le jeu du jour" }));
+  host.appendChild(el("div", { class: "section-label", text: "Les jeux du jour" }));
   host.appendChild(el("div", { class: "stat-grid" }, [
     box(`${streak}🔥`, "Série en cours"),
+    box(`${done}/${total}`, "Jeux du jour"),
     box(s.puzzleSolved, "Jeux réussis"),
     box(`${accuracy}%`, "Taux de réussite"),
-    box(s.puzzlePlayed, "Jeux joués"),
   ]));
 
   host.appendChild(el("div", { class: "card" }, [
