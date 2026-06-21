@@ -1,3 +1,7 @@
 .DS_Store
 node_modules/
 *.log
+
+# Notes perso et code « v2 » parqué : on les garde en local, hors du dépôt public
+NOTES.local.md
+future-predictions/
